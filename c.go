@@ -8,10 +8,11 @@ import(
 	"strings"
 )
 var(
-	choose int16 //mainScreen
+	choose string //mainScreen
+	isInfo = false
 	//General uses
 	username string
-	mail string
+	email string
 	password string
 
 	//Less used
@@ -21,14 +22,25 @@ var(
 	account_tag = "account/"
 	char_tag = "char/"
 	
-	register = core_url + account_tag + "Register?isAgeVerified=1&newGUID="+mail+"&newPassword="+password+"&name="+username
-	forgotPassword = core_url + account_tag + "forgotPassword?guid="+mail
-	setName = core_url + account_tag + "setName?guid="+mail+"&password"+password+"&name"+username
-	sendVerifyMail = core_url + account_tag + "sendVerifyEmail?guid="+mail+"&password="+password
-	changePassword = core_url + account_tag + "changePassword?guid="+ mail + "&password="+password+"&newPassword="+newPassword
+	register string
+	forgotPassword string 
+	setName string
+	sendVerifyMail string
+	changePassword string
+	banCheck string
 )
 
 //This module is for global defines
+
+//Still i don't know why i need func. Not working if i don't use :/
+func url_create(){
+	register = core_url + account_tag + "register?isAgeVerified=1&newGUID="+email+"&newPassword="+password+"&name="+username
+	forgotPassword = core_url + account_tag + "forgotPassword?guid="+email
+	setName = core_url + account_tag + "setName?guid="+email+"&password"+password+"&name"+username
+	sendVerifyMail = core_url + account_tag + "sendVerifyEmail?guid=" + email + "&password=" + password
+	changePassword = core_url + account_tag + "changePassword?guid="+ email + "&password="+password+"&newPassword="+newPassword
+	banCheck = core_url + char_tag + "list?guid="+email+"&password="+password
+}
 
 //Gloabal usage funcs
 
@@ -48,12 +60,12 @@ func send(s string)(string,error){ //Send request
 	}
 	return c,e
 }
-func request(s string)(string,error){ //Same with "send" but you don't need extra code for data
+func request(s string)(string){ //Same with "send" but you don't need extra code for data
 	r,e := send(s)
 	if e != nil {
 		fmt.Println(e)
 	}
-	return r,e
+	return r
 }
 func r()string{ //Line reader. You can use fmt.Scanf too.
 	r := bufio.NewScanner(os.Stdin)
@@ -74,48 +86,61 @@ func c(s string)string{ //URL encoding. If you need more chars, you need to add 
 //Script Usage
 func Register(){
 	fmt.Printf("Email: ")
-	mail = r()
+	email = c(r())
 	fmt.Printf("Password: ")
-	password = r()
+	password = c(r())
 	fmt.Printf("Name: ")
 	username = r()
-	r,e := send(register)
-	if e != nil{
-		fmt.Println(e)
-	}
-	fmt.Println(r)
+	fmt.Println(request(register))	
 }
 func ForgotPassword(){
 	fmt.Printf("Email: ")
-	mail = r()
+	email = c(r())
 	r,e := send(forgotPassword)
 	if e != nil{
 		fmt.Println(e)
 	}
+	url_create()
 	fmt.Println(r)
 }
 func SetName(){
 	fmt.Printf("Email: ")
-	mail = r()
+	email = c(r())
 	fmt.Printf("Password: ")
-	password = r()
+	password = c(r())
 	fmt.Printf("Name: ")
 	username = r()
+	url_create()
 	fmt.Println(request(setName))
 }
 func SendVerifyEmail(){
 	fmt.Printf("Email: ")
-	mail = r()
+	email = c(r())
 	fmt.Printf("Password: ")
-	password = r()
+	password = c(r())
+	url_create()
 	fmt.Println(request(sendVerifyMail))
 }
 func ChangePassword(){
 	fmt.Printf("Email: ")
-	mail = r()
+	email = c(r())
 	fmt.Printf("Password: ")
-	password = r()
+	password = c(r())
 	fmt.Printf("New Password:")
-	newPassword = r()
+	newPassword = c(r())
+	url_create()
 	fmt.Println(request(changePassword))
+}
+func isBanned() {
+	fmt.Printf("Email: ")
+	email = c(r())
+	fmt.Printf("Password: ")
+	password = c(r())
+	url_create()
+	x := request(banCheck)
+	if strings.Contains(x,"Account is under maintenance"){
+		fmt.Printf("Account is banned!")
+	}else{
+		fmt.Printf("Account is not banned!")
+	}
 }

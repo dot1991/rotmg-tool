@@ -18,21 +18,25 @@ func mainScreen(){
 	fmt.Printf("3)Set Name\n")
 	fmt.Printf("4)Send Verify Email\n")
 	fmt.Printf("5)Change Password\n")
+	fmt.Printf("6)Ban Checker\n")
 	fmt.Printf("$")
-	fmt.Scanf("%d",&choose)
-	if choose == 1 {
+	choose = r()
+	if choose == "1" {
 		Register()
 	}
-	if choose == 2 {
+	if choose == "2" {
 		ForgotPassword()
 	}
-	if choose == 3 {
+	if choose == "3" {
 		SetName()
 	}
-	if choose == 4 {
+	if choose == "4" {
 		SendVerifyEmail()
 	}
-	if choose == 5 {
+	if choose == "5" {
 		ChangePassword()
+	}
+	if choose == "6" {
+		isBanned()
 	}
 }
