@@ -61,16 +61,15 @@ func r()string{ //Line reader. You can use fmt.Scanf too.
 	return r.Text()
 }
 func c(s string)string{ //URL encoding. If you need more chars, you need to add them manually!
-	c := s
-	c = strings.Replace(s,"@","%40",99)
-	s = strings.ReplaceAll(s,"?","%3F")
-	//s = strings.ReplaceAll(s,"%","%25") Causing problem!
-	s = strings.ReplaceAll(s,"+","%2B")
-	s = strings.ReplaceAll(s,"#","%23")
-	s = strings.ReplaceAll(s,".","%2E")
-	s = strings.ReplaceAll(s,":","%3A")
-	s = strings.ReplaceAll(s,"=","%3D")
-	return c
+	s = strings.Replace(s,"%","%25",-1)
+	s = strings.Replace(s,"@","%40",-1)
+	s = strings.Replace(s,"?","%3F",-1)
+	s = strings.Replace(s,"+","%2B",-1)
+	s = strings.Replace(s,"#","%23",-1)
+	s = strings.Replace(s,".","%2E",-1)
+	s = strings.Replace(s,":","%3A",-1)
+	s = strings.Replace(s,"=","%3D",-1)
+	return s
 }
 //Script Usage
 func Register(){
