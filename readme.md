@@ -1,3 +1,5 @@
-#RotMG Tools
--Most of functions are not tested
--Not used new Unity headers so use with your own risk
+# Rotmg Tools
+### Most of functions didn't test yet
+### This script don't have new Unity checkers so it's not %100 safe to use.
+
+## Use it with your own risk!
