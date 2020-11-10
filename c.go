@@ -9,7 +9,7 @@ import(
 )
 var(
 	choose string //mainScreen
-	isInfo = false
+	isSteam = false
 	//General uses
 	username string
 	email string
@@ -34,12 +34,21 @@ var(
 
 //Still i don't know why i need func. Not working if i don't use :/
 func url_create(){
+	if isSteam == true{
+		register = core_url + account_tag + "register?isAgeVerified=1&newGUID="+email+"&newPassword="+password+"&name="+username
+		forgotPassword = core_url + account_tag + "forgotPassword?guid="+email
+		setName = core_url + account_tag + "setName?guid="+email+"&secret"+password+"&name"+username
+		sendVerifyMail = core_url + account_tag + "sendVerifyEmail?guid=" + email + "&password=" + password
+		changePassword = core_url + account_tag + "changePassword?guid="+ email + "&password="+password+"&newPassword="+newPassword
+		banCheck = core_url + char_tag + "list?guid="+email+"&secret="+password
+	}else{
 	register = core_url + account_tag + "register?isAgeVerified=1&newGUID="+email+"&newPassword="+password+"&name="+username
 	forgotPassword = core_url + account_tag + "forgotPassword?guid="+email
 	setName = core_url + account_tag + "setName?guid="+email+"&password"+password+"&name"+username
 	sendVerifyMail = core_url + account_tag + "sendVerifyEmail?guid=" + email + "&password=" + password
 	changePassword = core_url + account_tag + "changePassword?guid="+ email + "&password="+password+"&newPassword="+newPassword
 	banCheck = core_url + char_tag + "list?guid="+email+"&password="+password
+	}
 }
 
 //Gloabal usage funcs
@@ -83,6 +92,11 @@ func c(s string)string{ //URL encoding. If you need more chars, you need to add 
 	s = strings.Replace(s,"=","%3D",-1)
 	return s
 }
+func steamCheck(s string){
+	if !strings.Contains(s,"%40"){
+		isSteam = true
+	}
+}
 //Script Usage
 func Register(){
 	fmt.Printf("Email: ")
@@ -104,12 +118,13 @@ func ForgotPassword(){
 	fmt.Println(r)
 }
 func SetName(){
-	fmt.Printf("Email: ")
+	fmt.Printf("Email / Steamwork ID: ")
 	email = c(r())
-	fmt.Printf("Password: ")
+	fmt.Printf("Password / Secret: ")
 	password = c(r())
 	fmt.Printf("Name: ")
 	username = r()
+	steamCheck(email)
 	url_create()
 	fmt.Println(request(setName))
 }
@@ -132,10 +147,11 @@ func ChangePassword(){
 	fmt.Println(request(changePassword))
 }
 func isBanned() {
-	fmt.Printf("Email: ")
+	fmt.Printf("Email / Steamwork ID: ")
 	email = c(r())
-	fmt.Printf("Password: ")
+	fmt.Printf("Password / Secret: ")
 	password = c(r())
+	steamCheck(email)
 	url_create()
 	x := request(banCheck)
 	if strings.Contains(x,"Account is under maintenance"){
